@@ -19,7 +19,7 @@ public class maul {
                     target.getWorld().spawnEntity(location, EntityType.HUSK);
                     target.getWorld().spawnEntity(location, EntityType.HUSK);
                     target.getWorld().spawnEntity(location, EntityType.HUSK);
-                    player.sendMessage(ChatColor.GREEN + "Success");
+                    player.sendMessage(ChatColor.BLACK + "Success");
 
                 }
             }
