@@ -1,0 +1,31 @@
+name: AdminGUI
+authors: [Simba1712, Zandercross12]
+version: 1.0
+api-version: 1.16
+description: AdminGUI Plugin
+main: me.simba.admingui.Main
+commands:
+  gui:
+    description: Opens an AdminGUI
+    usage: /gui
+  feed:
+    description: Feeds the player
+    usage: /feed
+  vanish:
+    description: Makes the player disappear
+    usage: /vanish
+  heal:
+    description: Heals the player
+    usage: /heal
+  fly:
+    description: Allows the player to fly
+    usage: /fly
+  ignite:
+    description: Burns the target player
+    usage: /ignite
+  blind:
+    description: Blinds the target player
+    usage: /blind
+  maul:
+    description: Spawns zombies at the target player
+    usage: /maul
