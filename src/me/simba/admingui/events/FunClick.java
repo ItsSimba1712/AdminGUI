@@ -1,8 +1,10 @@
 package me.simba.admingui.events;
 
-import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
-import org.bukkit.Material;
+import me.simba.admingui.Main;
+import org.bukkit.*;
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.EntityType;
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -11,6 +13,8 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.SkullMeta;
+import org.bukkit.metadata.FixedMetadataValue;
+import org.bukkit.plugin.Plugin;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
@@ -19,6 +23,7 @@ import java.util.ArrayList;
 import static org.bukkit.ChatColor.GOLD;
 
 public class FunClick implements Listener {
+    Plugin plugin = Main.getPlugin(Main.class);
     @SuppressWarnings("deprication")
 
     //       ChatColors
@@ -46,6 +51,7 @@ public class FunClick implements Listener {
     String blue = ChatColor.BLUE + "";
 
     public static void getPlayerHeads(Player ply, Inventory inv) {
+
         ArrayList<Player> player_list = new ArrayList<>(ply.getServer().getOnlinePlayers());
         int i = 0;
         for (Player player : player_list) {
@@ -89,13 +95,36 @@ public class FunClick implements Listener {
 
                 player.openInventory(inv);
 
-            } else if (mat.getType() == Material.INK_SAC  && mat_meta.getDisplayName().equals(gray + bold + "Blind")) {
+            } else if (mat.getType() == Material.INK_SAC && mat_meta.getDisplayName().equals(gray + bold + "Blind")) {
 
                 Inventory inv = Bukkit.createInventory(null, 45, black + bold + "Blind");
 
                 getPlayerHeads(player, inv);
 
                 player.openInventory(inv);
+
+            } else if (mat.getType() == Material.ZOMBIE_SPAWN_EGG && mat_meta.getDisplayName().equals(red + bold + "Maul")) {
+
+                Inventory inv = Bukkit.createInventory(null, 45, red + bold + "Maul");
+
+                getPlayerHeads(player, inv);
+
+                player.openInventory(inv);
+            }
+
+        } else if (inv_view.equals(black + bold + "Blind")) {
+            event.setCancelled(true);
+
+            if (mat.getType().equals(Material.PLAYER_HEAD)) {
+
+                for (Player target : Bukkit.getOnlinePlayers()) {
+                    if (mat_meta.getDisplayName().equals(target.getName())) {
+                        target.addPotionEffect(new PotionEffect(PotionEffectType.BLINDNESS, 200, 255));
+                        player.sendMessage(ChatColor.GREEN + "You have blinded " + target.getName() + "!");
+                        player.closeInventory();
+                    }
+                }
+            }
 
         } else if (inv_view.equals(red + bold + "Ignite")) {
             event.setCancelled(true);
@@ -113,19 +142,35 @@ public class FunClick implements Listener {
 
             }
 
-        }
-
-        }  else if (inv_view.equals(black + bold + "Blind")) {
+        } else if (inv_view.equals(red + bold + "Maul")) {
             event.setCancelled(true);
 
             if (mat.getType().equals(Material.PLAYER_HEAD)) {
 
                 for (Player target : Bukkit.getOnlinePlayers()) {
-                    if (mat_meta.getDisplayName().equals(target.getName())) {
-                        target.addPotionEffect(new PotionEffect(PotionEffectType.BLINDNESS, 200, 255));
-                        player.sendMessage(ChatColor.GREEN + "You have blinded " + target.getName() + "!");
-                        player.closeInventory();
+                    Location location = target.getLocation();
+
+                    target.setGameMode(GameMode.SURVIVAL);
+                    Entity husk = Bukkit.getWorld("world").spawnEntity(location, EntityType.HUSK);
+                    husk.setMetadata("maul_husk", new FixedMetadataValue(plugin, true));
+                    husk = Bukkit.getWorld("world").spawnEntity(location, EntityType.HUSK);
+                    husk.setMetadata("maul_husk", new FixedMetadataValue(plugin, true));
+                    husk = Bukkit.getWorld("world").spawnEntity(location, EntityType.HUSK);
+                    husk.setMetadata("maul_husk", new FixedMetadataValue(plugin, true));
+                    husk = Bukkit.getWorld("world").spawnEntity(location, EntityType.HUSK);
+                    husk.setMetadata("maul_husk", new FixedMetadataValue(plugin, true));
+                    husk = Bukkit.getWorld("world").spawnEntity(location, EntityType.HUSK);
+                    husk.setMetadata("maul_husk", new FixedMetadataValue(plugin, true));
+                    for (LivingEntity entity : target.getWorld().getLivingEntities()) {
+                        if (entity.hasMetadata("maul_husk")) {
+                            entity.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, 200, 3));
+                            entity.addPotionEffect(new PotionEffect(PotionEffectType.HARM, 200, 100));
+                            entity.addPotionEffect(new PotionEffect(PotionEffectType.INCREASE_DAMAGE, 200, 3));
+                            entity.removeMetadata("maul_husk", plugin);
+                        }
                     }
+                    player.sendMessage(ChatColor.GREEN + "You have mauled " + target.getName() + "!");
+                    player.closeInventory();
                 }
             }
 
